@@ -11,6 +11,9 @@ builds = [
     "array", 
     "bit", 
     "source_location", 
+    "chrono", 
+    "thread", 
+    "optional", 
 ]
 
 import os 

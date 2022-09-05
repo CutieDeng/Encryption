@@ -38,6 +38,7 @@ export auto sha1(auto &&v) -> array<uint32_t, 5> {
         
         if (the_last == Eof::not_eof) [[likely]] {
             if (!v) {
+                assert (total_cnt == 0); 
                 throw std::ios_base::failure("Open the related byte stream but meeting error. "); 
             }
             v.read(cache, CACHE_BLOCK); 
