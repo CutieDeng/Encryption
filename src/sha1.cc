@@ -1,5 +1,7 @@
 export module sha1; 
 
+#define NDEBUG
+
 import <ios>; 
 import <cassert>; 
 import <array>; 
@@ -36,8 +38,7 @@ export auto sha1(auto &&v) -> array<uint32_t, 5> {
         
         if (the_last == Eof::not_eof) [[likely]] {
             if (!v) {
-                auto e = v.exceptions();
-                throw std::ios_base::failure("Read input stream meets error. "); 
+                throw std::ios_base::failure("Open the related byte stream but meeting error. "); 
             }
             v.read(cache, CACHE_BLOCK); 
             {
@@ -58,7 +59,7 @@ export auto sha1(auto &&v) -> array<uint32_t, 5> {
                         cache[cnt] = 0; 
                     }
                     if (the_last == Eof::eof) 
-                        *(uint64_t *)&cache[PARTIAL_BLOCK] = std::byteswap(total_cnt * 8); 
+                        *(uint64_t *)&cache[PARTIAL_BLOCK] = byteswap(total_cnt * 8); 
                 } else {
                     assert (cnt == CACHE_BLOCK); 
                 }
@@ -67,7 +68,7 @@ export auto sha1(auto &&v) -> array<uint32_t, 5> {
             for (size_t cnt = 0; cnt < PARTIAL_BLOCK; ++cnt) {
                 cache[cnt] = 0; 
             }
-            *(uint64_t *)&cache[PARTIAL_BLOCK] = std::byteswap(total_cnt * 8); 
+            *(uint64_t *)&cache[PARTIAL_BLOCK] = byteswap(total_cnt * 8); 
             the_last = Eof::eof; 
         } else {
             assert (the_last == Eof::eof); 
@@ -78,14 +79,13 @@ export auto sha1(auto &&v) -> array<uint32_t, 5> {
         size_t i; 
         for (i = 0; i < CACHE_BLOCK / 4; ++i) {
             // blocks[i] = *(uint32_t *)&cache[i * 4]; 
-            blocks[i] = std::byteswap(((uint32_t *)cache)[i]); 
+            blocks[i] = byteswap(((uint32_t *)cache)[i]); 
         }
         static_assert (CACHE_BLOCK / 4 >= 16); 
         for (; i < SUB_BLOCK; ++i) {
             blocks[i] = rotl(
-                (blocks[i - 3] ^ blocks[i - 8] ^ blocks[i - 14] ^ blocks[i - 16]), 
+                    (blocks[i - 3] ^ blocks[i - 8] ^ blocks[i - 14] ^ blocks[i - 16]), 
                 1); 
-            // blocks[i] = (blocks[i] << 1) | (blocks[i] >> (sizeof blocks[0] * 8 - 1)); 
         }
         older = origin; 
         // repeat sub-block times to calculate the result. 
@@ -102,14 +102,12 @@ export auto sha1(auto &&v) -> array<uint32_t, 5> {
             }
         }; 
         constexpr uint32_t k[] = {0x5A827999, 0x6ED9EBA1, 0x8F1BBCDC, 0xCA62C1D6, }; 
-        // constexpr uint32_t k[] = {0x5A827999, 0x6ED9EBA1, 0x8F188CDC, 0xCA62C1D6, };  ?!
         static_assert (sizeof k / sizeof (uint32_t) >= SUB_BLOCK / 20); 
         for (i = 0; i < SUB_BLOCK; ++i) {
             tmp.b = origin.a; 
             tmp.c = rotl(origin.b, 30); 
             tmp.d = origin.c; 
             tmp.e = origin.d; 
-            // tmp.a = ((origin.a << 5) | (origin.a >> (sizeof origin.a * 8 - 5))) 
             tmp.a = rotl(origin.a, 5) 
                 + ft(origin.b, origin.c, origin.d, i) + origin.e
                 + blocks[i] + k[i / 20]; 
