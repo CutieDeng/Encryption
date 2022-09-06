@@ -14,6 +14,13 @@ builds = [
     "chrono", 
     "thread", 
     "optional", 
+    "ranges", 
+    "sstream", 
+    'sys/socket.h', 
+    'string', 
+    'algorithm', 
+    "cstdint", 
+    "syncstream", 
 ]
 
 import os 

@@ -4,7 +4,7 @@ import <iomanip>;
 import <cassert>; 
 import <chrono>; 
 import <optional>; 
-import <thread>; 
+import <array>; 
 
 import sha1; 
 
@@ -24,7 +24,7 @@ Usage: '(this-program) (the-related-file)'
     if (argc >= 3 && std::string_view(argv[2]) == "-t") {
         start = std::chrono::system_clock::now(); 
     }
-    auto r = sha1(std::ifstream(argv[1], std::fstream::binary)); 
+    auto r = sha1::hash(std::ifstream(argv[1], std::fstream::binary)); 
 
     std::optional<std::chrono::microseconds> d; 
     if (start) {
@@ -38,4 +38,5 @@ Usage: '(this-program) (the-related-file)'
         std::cout << "\nCost time: " << d->count() / 1e3 << " ms. \n"; 
     }
     flush(std::cout); 
+    return 0; 
 }
