@@ -3,7 +3,7 @@ target = game
 
 src_files = $(wildcard includes/*.cc)
 obj_files = $(patsubst includes/%.cc,out/%.o,$(src_files))
-bin_files = $(wildcard src/*.cc) 
+bin_files = $(wildcard src/**.cc) 
 target_object = $(patsubst src/%.cc,out/%.o,$(bin_files)) 
 targets = $(patsubst src/%.cc,bin/%,$(bin_files)) 
 

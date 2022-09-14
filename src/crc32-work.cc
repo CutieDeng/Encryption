@@ -2,6 +2,7 @@ import <sstream>;
 import <iostream>; 
 import <iomanip>; 
 import <syncstream>; 
+import <fstream>; 
 
 import crc32; 
 
@@ -11,5 +12,6 @@ int main (int argc, char *argv[]) {
         return 1; 
     }
     auto p = crc32::hash(std::stringstream (argv[1])); 
+    // auto p2 = crc32::hash(std::fstream("?")); 
     std::cout << std::hex << std::setw(8) << std::setfill('0') << p << '\n'; 
 }

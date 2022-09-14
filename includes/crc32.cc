@@ -34,11 +34,10 @@ export namespace crc32 {
     using result_type = uint32_t; 
     auto hash(auto &&input_bytes) -> result_type {
         result_type result { 0xFFFFFFFF }; 
-        input_bytes.exceptions(ios::badbit); 
         char c; 
         while (1) {
             input_bytes.get(c); 
-            if (input_bytes.eof()) 
+            if (!input_bytes)
                 return result ^ 0xFFFFFFFF; 
             size_t look = (result ^ c) & 0xff; 
             result >>= 8; 

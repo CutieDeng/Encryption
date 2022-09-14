@@ -21,6 +21,8 @@ builds = [
     'algorithm', 
     "cstdint", 
     "syncstream", 
+    "vector", 
+    "coroutine", 
 ]
 
 import os 
